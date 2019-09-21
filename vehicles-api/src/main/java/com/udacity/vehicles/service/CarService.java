@@ -1,9 +1,16 @@
 package com.udacity.vehicles.service;
 
+import com.udacity.vehicles.client.maps.MapsClient;
+import com.udacity.vehicles.client.prices.PriceClient;
+import com.udacity.vehicles.domain.Location;
 import com.udacity.vehicles.domain.car.Car;
 import com.udacity.vehicles.domain.car.CarRepository;
 import java.util.List;
+
+import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.reactive.function.client.WebClient;
 
 /**
  * Implements the car service create, read, update or delete
@@ -14,13 +21,29 @@ import org.springframework.stereotype.Service;
 public class CarService {
 
     private final CarRepository repository;
+    private WebClient maps;
+    private WebClient pricing;
+    private PriceClient priceC;
+    private MapsClient mapC;
+    private ModelMapper modelMapper;
 
-    public CarService(CarRepository repository) {
+    @Autowired
+    public CarService(CarRepository repository, WebClient maps, WebClient pricing, ModelMapper modelMapper) {
         /**
          * TODO: Add the Maps and Pricing Web Clients you create
          *   in `VehiclesApiApplication` as arguments and set them here.
          */
+
         this.repository = repository;
+        this.maps = maps;
+        this.pricing = pricing;
+        this.modelMapper = modelMapper;
+        priceC = new PriceClient(pricing);
+        mapC = new MapsClient(maps, modelMapper);
+        Location loc = new Location(20.0, 30.0);
+        System.out.println("Inside CarService constructor .. priceC.get() == " + priceC.getPrice(1L));
+        Location dest = mapC.getAddress(loc);
+        System.out.println("Inside CarService constructor .. mapC.getCity() == " + dest.getCity());
     }
 
     /**
@@ -42,6 +65,12 @@ public class CarService {
          *   If it does not exist, throw a CarNotFoundException
          *   Remove the below code as part of your implementation.
          */
+        System.out.println("Inside CarService findById .. priceC.get() == " + priceC.getPrice(2L));
+        Location loc = new Location(20.0, 30.0);
+        System.out.println("The loc to find is ... loc.getLat() " + loc.getLat());
+        Location dest = mapC.getAddress(loc);
+        System.out.println("Inside CarService findById .. mapC.getCity() == " + dest.getCity());
+
         Car car = new Car();
 
         /**

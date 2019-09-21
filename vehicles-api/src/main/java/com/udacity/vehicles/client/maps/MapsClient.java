@@ -32,6 +32,7 @@ public class MapsClient {
      *   or an exception message noting the Maps service is down
      */
     public Location getAddress(Location location) {
+        System.out.println("Inside MapsClient ... getAddress .. the address to find is ... location.getLat() " + location.getLat());
         try {
             Address address = client
                     .get()
@@ -42,12 +43,13 @@ public class MapsClient {
                             .build()
                     )
                     .retrieve().bodyToMono(Address.class).block();
-
+            System.out.println("Before mapper address == " + address.getCity());
             mapper.map(Objects.requireNonNull(address), location);
+            System.out.println("Before mapper address location.getCity() == " + location.getCity());
 
             return location;
         } catch (Exception e) {
-            log.warn("Map service is down");
+            log.warn("Map service is down + e == " + e.getMessage());
             return location;
         }
     }
