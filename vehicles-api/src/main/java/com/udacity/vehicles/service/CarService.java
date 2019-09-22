@@ -65,13 +65,31 @@ public class CarService {
          *   If it does not exist, throw a CarNotFoundException
          *   Remove the below code as part of your implementation.
          */
+        /**
         System.out.println("Inside CarService findById .. priceC.get() == " + priceC.getPrice(2L));
         Location loc = new Location(20.0, 30.0);
         System.out.println("The loc to find is ... loc.getLat() " + loc.getLat());
         Location dest = mapC.getAddress(loc);
         System.out.println("Inside CarService findById .. mapC.getCity() == " + dest.getCity());
+         */
+        Car carReq = getCarById(id);
+        System.out.println("Inside Car findById");
+        /**
+        for(Car car : list()){
+            System.out.println("The car id is " + car.getId());
+            if(car.getId() == id){
+                carReq = car;
 
-        Car car = new Car();
+            }
+        }
+         */
+        System.out.println("carReq is " + carReq);
+        if(carReq == null){
+            throw new CarNotFoundException();
+        }
+
+
+        //Car car = new Car();
 
         /**
          * TODO: Use the Pricing Web client you create in `VehiclesApiApplication`
@@ -80,6 +98,8 @@ public class CarService {
          * Note: The car class file uses @transient, meaning you will need to call
          *   the pricing service each time to get the price.
          */
+
+        carReq.setPrice(priceC.getPrice(carReq.getId()));
 
 
         /**
@@ -91,10 +111,28 @@ public class CarService {
          * meaning the Maps service needs to be called each time for the address.
          */
 
+        carReq.setLocation(mapC.getAddress(carReq.getLocation()));
 
-        return car;
+
+
+
+        return carReq;
     }
 
+    /**
+     *
+     *
+     */
+    public Car getCarById(long id){
+        Car carReq = null;
+        for(Car car : list()){
+            System.out.println("The car id is " + car.getId());
+            if(car.getId() == id){
+                carReq = car;
+            }
+        }
+        return carReq;
+    }
     /**
      * Either creates or updates a vehicle, based on prior existence of car
      * @param car A car object, which can be either new or existing
@@ -122,11 +160,19 @@ public class CarService {
          * TODO: Find the car by ID from the `repository` if it exists.
          *   If it does not exist, throw a CarNotFoundException
          */
+        Car carReq = getCarById(id);
+        if(carReq == null){
+            throw new CarNotFoundException();
+        }
+
+
+
 
 
         /**
          * TODO: Delete the car from the repository.
          */
+        repository.delete(carReq);
 
 
     }

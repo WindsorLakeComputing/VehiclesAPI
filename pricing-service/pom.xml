@@ -14,9 +14,7 @@
 	<name>pricing-service</name>
 	<description>Pricing Service</description>
 
-	<properties>
-		<java.version>11</java.version>
-	</properties>
+
 
 	<dependencies>
 

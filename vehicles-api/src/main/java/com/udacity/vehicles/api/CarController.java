@@ -64,9 +64,9 @@ class CarController {
          *   Update the first line as part of the above implementing.
          */
 
-        carService.findById(id);
+        //carService.findById(id);
 
-        return assembler.toResource(new Car());
+        return assembler.toResource(carService.findById(id));
     }
 
     /**
@@ -82,7 +82,10 @@ class CarController {
          * TODO: Use the `assembler` on that saved car and return as part of the response.
          *   Update the first line as part of the above implementing.
          */
-        Resource<Car> resource = assembler.toResource(new Car());
+        System.out.println("Inside carController ... post ... @RequestBody car == " + car.getCondition());
+        carService.save(car);
+        //Resource<Car> resource = assembler.toResource(new Car());
+        Resource<Car> resource = assembler.toResource(car);
         return ResponseEntity.created(new URI(resource.getId().expand().getHref())).body(resource);
     }
 
@@ -100,7 +103,10 @@ class CarController {
          * TODO: Use the `assembler` on that updated car and return as part of the response.
          *   Update the first line as part of the above implementing.
          */
-        Resource<Car> resource = assembler.toResource(new Car());
+        //Resource<Car> resource = assembler.toResource(new Car());
+        car.setId(id);
+        carService.save(car);
+        Resource<Car> resource = assembler.toResource(car);
         return ResponseEntity.ok(resource);
     }
 
@@ -114,6 +120,8 @@ class CarController {
         /**
          * TODO: Use the Car Service to delete the requested vehicle.
          */
+        carService.delete(id);
+
         return ResponseEntity.noContent().build();
     }
 }
