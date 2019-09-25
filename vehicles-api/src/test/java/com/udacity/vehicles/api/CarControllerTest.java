@@ -33,6 +33,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.ResultActions;
 
 /**
  * Implements testing of the CarController class.
@@ -92,13 +93,6 @@ public class CarControllerTest {
      */
     @Test
     public void listCars() throws Exception {
-        /**
-         * TODO: Add a test to check that the `get` method works by calling
-         *   the whole list of vehicles. This should utilize the car from `getCar()`
-         *   below (the vehicle will be the first in the list).
-         *
-         *
-         */
         mvc.perform(
                 get("/cars/"))
                         .andExpect(status().isOk())
@@ -113,11 +107,6 @@ public class CarControllerTest {
      */
     @Test
     public void findCar() throws Exception {
-        /**
-         * TODO: Add a test to check that the `get` method works by calling
-         *   a vehicle by ID. This should utilize the car from `getCar()` below.
-         */
-
         mvc.perform(
                 get("/cars/1"))
                 .andExpect(status().isOk())
@@ -128,16 +117,39 @@ public class CarControllerTest {
     }
 
     /**
+     * Tests if the update operation can successfully change the properties of an already existing car
+     * @throws Exception if car doesn't exist
+     */
+    @Test
+    public void updateCar() throws Exception{
+        Car car = getCar();
+        car.setId(1L);
+        car.setCondition(Condition.NEW);
+
+        mvc.perform(
+                post(new URI("/cars/"))
+                        .content(json.write(car).getJson())
+                        .contentType(MediaType.APPLICATION_JSON_UTF8)
+                        .accept(MediaType.APPLICATION_JSON_UTF8))
+                .andExpect(status().isCreated());
+
+        mvc.perform(
+                get("/cars/1"))
+                .andExpect(status().isOk())
+                .andReturn()
+                .toString()
+                .equals("{\"id\":1,\"createdAt\":null,\"modifiedAt\":null,\"condition\":\"NEW\",\"details\":{\"body\":\"sedan\",\"model\":\"Impala\",\"manufacturer\":{\"code\":101,\"name\":\"Chevrolet\"},\"numberOfDoors\":4,\"fuelType\":\"Gasoline\",\"engine\":\"3.6L V6\",\"mileage\":32280,\"modelYear\":2018,\"productionYear\":2018,\"externalColor\":\"white\"},\"location\":{\"lat\":40.73061,\"lon\":-73.935242,\"address\":null,\"city\":null,\"state\":null,\"zip\":null},\"price\":null,\"_links\":{\"self\":{\"href\":\"http://localhost/cars/1\"},\"cars\":{\"href\":\"http://localhost/cars\"}}}\n");
+
+
+
+    }
+
+    /**
      * Tests the deletion of a single car by ID.
      * @throws Exception if the delete operation of a vehicle fails
      */
     @Test
     public void deleteCar() throws Exception {
-        /**
-         * TODO: Add a test to check whether a vehicle is appropriately deleted
-         *   when the `delete` method is called from the Car Controller. This
-         *   should utilize the car from `getCar()` below.
-         */
         mvc.perform(delete("/cars/1"))
                 .andExpect(status().is(204));
     }

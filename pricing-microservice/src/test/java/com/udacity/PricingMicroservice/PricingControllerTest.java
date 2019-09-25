@@ -35,7 +35,7 @@ public class PricingControllerTest {
         price.setCurrency("USD");
         price.setPrice(new BigDecimal("11332.08"));
         mvc.perform(
-                get("/services/price/\\?vehicleId=1/"))
+                get("/services/price?vehicleId=1"))
                 .andExpect(status().isOk())
                 .andReturn()
                 .toString()
